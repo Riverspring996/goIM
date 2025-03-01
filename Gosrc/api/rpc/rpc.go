@@ -7,14 +7,15 @@ package rpc
 
 import (
 	"context"
-	"github.com/rpcxio/libkv/store"
-	etcdV3 "github.com/rpcxio/rpcx-etcd/client"
-	"github.com/sirupsen/logrus"
-	"github.com/smallnest/rpcx/client"
 	"gochat/config"
 	"gochat/proto"
 	"sync"
 	"time"
+
+	"github.com/rpcxio/libkv/store"
+	etcdV3 "github.com/rpcxio/rpcx-etcd/client"
+	"github.com/sirupsen/logrus"
+	"github.com/smallnest/rpcx/client"
 )
 
 var LogicRpcClient client.XClient
@@ -25,6 +26,7 @@ type RpcLogic struct {
 
 var RpcLogicObj *RpcLogic
 
+// 初始化RpcLogic客户端
 func InitLogicRpcClient() {
 	once.Do(func() {
 		etcdConfigOption := &store.Config{
@@ -54,6 +56,7 @@ func InitLogicRpcClient() {
 	}
 }
 
+// 一系列RPC方法调用，使用call方法
 func (rpc *RpcLogic) Login(req *proto.LoginRequest) (code int, authToken string, msg string) {
 	reply := &proto.LoginResponse{}
 	err := LogicRpcClient.Call(context.Background(), "Login", req, reply)

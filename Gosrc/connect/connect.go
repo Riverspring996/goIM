@@ -7,12 +7,13 @@ package connect
 
 import (
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 	"gochat/config"
 	_ "net/http/pprof"
 	"runtime"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 var DefaultServer *Server

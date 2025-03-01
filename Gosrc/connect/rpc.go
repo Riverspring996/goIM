@@ -9,6 +9,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"gochat/config"
+	"gochat/proto"
+	"gochat/tools"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/rcrowley/go-metrics"
 	"github.com/rpcxio/libkv/store"
 	etcdV3 "github.com/rpcxio/rpcx-etcd/client"
@@ -16,12 +23,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
 	"github.com/smallnest/rpcx/server"
-	"gochat/config"
-	"gochat/proto"
-	"gochat/tools"
-	"strings"
-	"sync"
-	"time"
 )
 
 var logicRpcClient client.XClient

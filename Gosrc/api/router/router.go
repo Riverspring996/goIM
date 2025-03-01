@@ -6,13 +6,14 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"gochat/api/handler"
 	"gochat/api/rpc"
 	"gochat/proto"
 	"gochat/tools"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 func Register() *gin.Engine {
@@ -26,6 +27,25 @@ func Register() *gin.Engine {
 	return r
 }
 
+// 跨域中间件？
+func CorsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		method := c.Request.Method
+		var openCorsFlag = true
+		if openCorsFlag {
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+			c.Header("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
+			c.Set("content-type", "application/json")
+		}
+		if method == "OPTIONS" {
+			c.JSON(http.StatusOK, nil)
+		}
+		c.Next()
+	}
+}
+
+// 用户信息
 func initUserRouter(r *gin.Engine) {
 	userGroup := r.Group("/user")
 	userGroup.POST("/login", handler.Login)
@@ -38,6 +58,7 @@ func initUserRouter(r *gin.Engine) {
 
 }
 
+// 公用信息
 func initPushRouter(r *gin.Engine) {
 	pushGroup := r.Group("/push")
 	pushGroup.Use(CheckSessionId())
@@ -54,6 +75,7 @@ type FormCheckSessionId struct {
 	AuthToken string `form:"authToken" json:"authToken" binding:"required"`
 }
 
+// 验证sessionId
 func CheckSessionId() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var formCheckSessionId FormCheckSessionId
@@ -66,6 +88,7 @@ func CheckSessionId() gin.HandlerFunc {
 		req := &proto.CheckAuthRequest{
 			AuthToken: authToken,
 		}
+		//验证函数
 		code, userId, userName := rpc.RpcLogicObj.CheckAuth(req)
 		if code == tools.CodeFail || userId <= 0 || userName == "" {
 			c.Abort()
@@ -74,22 +97,5 @@ func CheckSessionId() gin.HandlerFunc {
 		}
 		c.Next()
 		return
-	}
-}
-
-func CorsMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		method := c.Request.Method
-		var openCorsFlag = true
-		if openCorsFlag {
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-			c.Header("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
-			c.Set("content-type", "application/json")
-		}
-		if method == "OPTIONS" {
-			c.JSON(http.StatusOK, nil)
-		}
-		c.Next()
 	}
 }
