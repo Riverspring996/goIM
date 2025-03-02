@@ -6,11 +6,12 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"os"
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/spf13/viper"
 )
 
 var once sync.Once
@@ -141,9 +142,15 @@ type CommonRedis struct {
 	Db            int    `mapstructure:"db"`
 }
 
+type CommonKafka struct {
+	Brokers []string `mapstructure:"brokers"`
+	Topic   string   `mapstructure:"topic"`
+}
+
 type Common struct {
 	CommonEtcd  CommonEtcd  `mapstructure:"common-etcd"`
 	CommonRedis CommonRedis `mapstructure:"common-redis"`
+	CommonKafka CommonKafka `mapstructure:"common-kafka"`
 }
 
 type ConnectBase struct {

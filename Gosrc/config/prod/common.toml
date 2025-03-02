@@ -11,3 +11,7 @@ connectionTimeout = 5
 redisAddress = "127.0.0.1:6379"
 redisPassword = ""
 db = 0
+
+[common-kafka]
+brokers = ["localhost:9092"]
+topic = "gochat-messages"
