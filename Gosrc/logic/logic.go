@@ -7,10 +7,11 @@ package logic
 
 import (
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 	"gochat/config"
 	"runtime"
+
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 type Logic struct {

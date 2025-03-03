@@ -9,20 +9,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/go-redis/redis"
-	"github.com/rcrowley/go-metrics"
-	"github.com/rpcxio/rpcx-etcd/serverplugin"
-	"github.com/sirupsen/logrus"
-	"github.com/smallnest/rpcx/server"
 	"gochat/config"
 	"gochat/proto"
 	"gochat/tools"
 	"strings"
 	"time"
+
+	"github.com/IBM/sarama"
+	"github.com/go-redis/redis"
+	"github.com/rcrowley/go-metrics"
+	"github.com/rpcxio/rpcx-etcd/serverplugin"
+	"github.com/sirupsen/logrus"
+	"github.com/smallnest/rpcx/server"
 )
 
 var RedisClient *redis.Client
 var RedisSessClient *redis.Client
+
+var KafkaProducer sarama.SyncProducer
 
 func (logic *Logic) InitPublishRedisClient() (err error) {
 	redisOpt := tools.RedisOption{
@@ -39,6 +43,21 @@ func (logic *Logic) InitPublishRedisClient() (err error) {
 	return err
 }
 
+/*
+	func (logic *Logic) InitKafkaProducer() (err error) {
+		config := sarama.NewConfig()
+		config.Producer.RequiredAcks = sarama.WaitForAll
+		config.Producer.Retry.Max = 5
+		config.Producer.Return.Successes = true
+
+		KafkaProducer, err = sarama.NewSyncProducer(config.Conf.Common.CommonKafka.Brokers, config)
+		if err != nil {
+			logrus.Errorf("logic init kafka producer fail,err:%s", err.Error())
+			return
+		}
+		return
+	}
+*/
 func (logic *Logic) InitRpcServer() (err error) {
 	var network, addr string
 	// a host multi port case
